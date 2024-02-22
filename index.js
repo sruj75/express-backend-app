@@ -1,93 +1,73 @@
-const express = require('express');
-const app = express();
-const port = 3001;
+const express = require('express')
+const app = express()
+const port = 3001
+
+const USERS = [];
 
 const QUESTIONS = [{
-  title: "Two states",
-  description: "Given an array, return the maximum of the array?",
-  testCases: [{
-      input: "[1,2,3,4,5]",
-      output: "5"
-  }]
+    title: "Two states",
+    description: "Given an array , return the maximum of the array?",
+    testCases: [{
+        input: "[1,2,3,4,5]",
+        output: "5"
+    }]
 }];
 
-const SUBMISSION = [];
-let USERS = [];
 
-// Middleware to check if the user is an admin
-function isAdmin(req, res, next) {
-    // Assuming you have some way to identify admins, such as a flag in the user object
-    if (req.user && req.user.isAdmin) {
-        // User is an admin, proceed to the next middleware
-        next();
-    } else {
-        // User is not an admin, return 403 Forbidden
-        res.status(403).send('Only admins are allowed to access this route');
-    }
-}
+const SUBMISSION = [
 
-// Route for adding a new problem, accessible only to admins
-app.post('/problems', isAdmin, function(req, res) {
-    // Logic to add a new problem goes here
-    res.send('Problem added successfully');
-});
+]
 
-app.post('/signup',(req, res) => {
-  // Decode the request body to retrieve email and password
-  const { email, password } = req.body;
+app.post('/signup', function(req, res) {
+  // Add logic to decode body
+  // body should have email and password
 
-  // Check if the email is already registered
-  const existingUser = USERS.find(user => user.email === email);
 
-  if (existingUser) {
-    // If user already exists, return a 409 Conflict status code
-    return res.status(409).send('User already exists');
-  } else {
-    // If user doesn't exist, create a new user object
-    const newUser = { email, password };
-    // Store the new user in the USERS array
-    USERS.push(newUser);
-    // Return a 200 status code with a success message
-    return res.status(200).send('User signed up successfully!');
-  }
-});
+  //Store email and password (as is for now) in the USERS array above (only if the user with the given email doesnt exist)
 
-app.post('/login',(req, res) => {
-  // Decode the request body to retrieve email and password
-  const { email, password } = req.body;
 
-  // Find user with the provided email
-  const user = USERS.find(user => user.email === email);
+  // return back 200 status code to the client
+  res.send('Hello World!')
+})
 
-  if (!user) {
-    // If user with the provided email does not exist, return 401 Unauthorized
-    return res.status(401).send('User not found');
-  }
+app.post('/login', function(req, res) {
+  // Add logic to decode body
+  // body should have email and password
 
-  // Check if the provided password matches the user's password
-  if (user.password !== password) {
-    // If password does not match, return 401 Unauthorized
-    return res.status(401).send('Incorrect password');
-  }
+  // Check if the user with the given email exists in the USERS array
+  // Also ensure that the password is the same
 
-  // If email and password are correct, generate and send a token
-  const token = generateToken(); // Function to generate a token
-  return res.status(200).json({ token });
-});
+
+  // If the password is the same, return back 200 status code to the client
+  // Also send back a token (any random string will do for now)
+  // If the password is not the same, return back 401 status code to the client
+
+
+  res.send('Hello World from route 2!')
+})
 
 app.get('/questions', function(req, res) {
-  // Assuming QUESTIONS is an array containing question objects
-  res.json(QUESTIONS);
-});
+
+  //return the user all the questions in the QUESTIONS array
+  res.send("Hello World from route 3!")
+})
 
 app.get("/submissions", function(req, res) {
-  // Retrieve the user's submissions for this problem (assuming you have a function to do so)
-  const userSubmissions = getUserSubmissions(req.user.id, req.query.problemId); // Assuming you have a function to retrieve user submissions
-  
-  // Return the user's submissions
-  res.json(userSubmissions);
+   // return the users submissions for this problem
+  res.send("Hello World from route 4!")
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+
+app.post("/submissions", function(req, res) {
+   // let the user submit a problem, randomly accept or reject the solution
+   // Store the submission in the SUBMISSION array above
+  res.send("Hello World from route 4!")
 });
+
+// leaving as hard todos
+// Create a route that lets an admin add a new problem
+// ensure that only admins can do that.
+
+app.listen(port, function() {
+  console.log(`Example app listening on port ${port}`)
+})
